@@ -32,11 +32,21 @@
             <div class="attachment-item">{{item.name}}</div>
           </div>
         </van-collapse-item>
-        <van-collapse-item name="3">
+        <van-collapse-item name="3" class="base-info">
            <template #title>
-            <div class="type-name">科室（部门）负责人审核意见</div>
+            <div class="type-name">意见列表</div>
           </template>
-          拟同意，呈批
+          <van-list
+            v-model="loading"
+          >
+            <van-cell v-for="item in opinionList" :key="item">
+               <template #title>
+                  <div style="display: flex;align-items: center;"><van-icon name="friends" color="#5589c4"/><span style="padding-left:5px">部门：</span>{{item.dept}}</div>
+                  <div style="font-weight:bold"><span style="color:#5589c4">{{item.current}}：</span>{{item.name}} ({{item.date}})</div>
+                  <div style="text-indent: 2em;">{{item.content}}</div>
+              </template>
+            </van-cell>
+          </van-list>
         </van-collapse-item>
         <van-collapse-item name="4" class="opinion">
             <template #title>
@@ -66,7 +76,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref } from "vue";
 import common from "@/common";
 import { Toast } from "vant";
 import { setLocalS } from '@/utils'
@@ -78,6 +88,11 @@ export default {
     const activeTab = ref(1);
     const activeNames = ref(['1']);
     const currentComponent = ref("Info");
+    const opinionList = [
+      {dept:"办公室",name:"青运如",date:"2021-03-02 09:46",current:"拟办意见",content:"阅知"},
+      {dept:"办公室",name:"青运如",date:"2021-03-02 09:46",current:"拟办意见",content:"阅知"},
+      {dept:"办公室",name:"青运如",date:"2021-03-02 09:46",current:"拟办意见",content:"阅知"},
+    ]
 
     // 切换tab
     const onClickTab = (name) => {
@@ -139,35 +154,21 @@ export default {
         {src:"http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf",name:"我是附件1"},
         {src:"http://storage.xuetangx.com/public_assets/xuetangx/PDF/PlayerAPI_v1.0.6.pdf",name:"我是附件2"}
       ];
-
+      //附件预览
       const previewPdf=(item)=>{
-
-        console.log(item);
-        
+       console.log(item);
        window.location.href="/pdfjs/web/viewer.html?pdfUrl=" + item.src;
       };
 
     const goBack = () => {
       router.push({
         name: "LeaveList",
-        // params: { class: paramsClass },
-        // query: { type }
       });
     };
-
-    onMounted(() => {
-      const queryType = route.query.type;
-
-      if (queryType && queryType === "progress") {
-        title.value = "办理业务";
-        showTabbar.value = true;
-      }
-    });
 
     return {
       goBack,
       activeTab,
-      // tabs,
       currentComponent,
       onClickTab,
       refresh,
@@ -182,7 +183,8 @@ export default {
       activeNames,
       attachmentList,
       previewPdf,
-      setLocalS
+      setLocalS,
+      opinionList
     };
   },
 };
@@ -225,6 +227,10 @@ export default {
 // .submit {
 //   margin-left:12px;
 // }
+.base-info .van-cell{
+   padding-top:5px;
+   padding-bottom:5px;
+}
 .van-field{
   border:1px solid #e8e8e8;
   border-radius:4px;

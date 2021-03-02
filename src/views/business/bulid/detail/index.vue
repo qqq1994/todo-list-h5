@@ -146,8 +146,6 @@ export default {
         name: "BulidList",
       });
     };
-
-
     return {
       goBack,
       refresh,

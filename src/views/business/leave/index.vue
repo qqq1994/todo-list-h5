@@ -336,11 +336,9 @@ export default {
 }
 .business-list .van-cell{
    padding-top:5px;
-  padding-bottom:5px;
+   padding-bottom:5px;
 }
-// .business-list /deep/ .van-hairline--top-bottom::after {
-//   border-width:0;
-// }
+
 /deep/ .van-hairline--top-bottom::after, /deep/ .van-hairline-unset--top-bottom::after {
   border-width:0;
 }
