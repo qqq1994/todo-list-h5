@@ -1,5 +1,5 @@
 <template>
-  <div style="width:100%;height:100%;display:flex;flex-direction: column;">
+  <div style="width:100%;height:100%;display:flex;flex-direction: column;" id="detail">
     <van-nav-bar :title="title" left-arrow @click-left="goBack">
       <template #right> <van-icon name="replay" @click="refresh" /></template
     ></van-nav-bar>
@@ -87,12 +87,28 @@ export default {
     
     const activeTab = ref(1);
     const activeNames = ref(['1']);
+    var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    window.onresize = function() {
+        var nowClientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+      //  alert(nowClientHeight);
+        if (clientHeight - nowClientHeight > 60 ) {//因为ios有自带的底部高度
+            //键盘弹出的事件处理
+            document.getElementById("detail").classList.add("focusState");
+            //  alert(nowClientHeight)
+        }else{
+          document.getElementById("detail").classList.remove("focusState");
+        }
+        // else {
+        //     //键盘收起的事件处理
+        // 	document.getElementById("detail").classList.remove("focusState");
+        // } 
+    };
     const currentComponent = ref("Info");
     const opinionList = [
       {dept:"办公室",name:"青运如",date:"2021-03-02 09:46",current:"拟办意见",content:"阅知"},
       {dept:"办公室",name:"青运如",date:"2021-03-02 09:46",current:"拟办意见",content:"阅知"},
       {dept:"办公室",name:"青运如",date:"2021-03-02 09:46",current:"拟办意见",content:"阅知"},
-    ]
+    ];
 
     // 切换tab
     const onClickTab = (name) => {
@@ -250,4 +266,5 @@ export default {
 .attachment-item:last-child {
   padding-bottom:0;
 }
+.focusState {position: absolute;}
 </style>

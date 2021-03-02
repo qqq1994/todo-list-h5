@@ -1,10 +1,10 @@
 <template>
-  <div style="width:100%;height:100%;display:flex;flex-direction: column;">
+  <div style="width:100%;height:100%;display:flex;flex-direction: column;" id="detail">
     <van-nav-bar :title="title" left-arrow @click-left="goBack">
       <template #right> <van-icon name="replay" @click="refresh" /></template
     ></van-nav-bar>
     <div class="main">
-      <van-collapse v-model="activeNames" >
+      <van-collapse v-model="activeNames" accordion>
         <van-collapse-item name="1" class="base-info">
          <template #title>
           <div class="type-name">基本信息</div>
@@ -31,11 +31,21 @@
             <div class="attachment-item">{{item.name}}</div>
           </div>
         </van-collapse-item>
-        <van-collapse-item title="科室（部门）负责人审核意见" name="3">
+        <van-collapse-item name="3" class="base-info">
          <template #title>
-            <div class="type-name">科室（部门）负责人审核意见</div>
+            <div class="type-name">意见列表</div>
           </template>
-        拟同意，呈批
+            <van-list
+            v-model="loading"
+          >
+            <van-cell v-for="item in opinionList" :key="item">
+               <template #title>
+                  <div style="display: flex;align-items: center;"><van-icon name="friends" color="#5589c4"/><span style="padding-left:5px">部门：</span>{{item.dept}}</div>
+                  <div style="font-weight:bold"><span style="color:#5589c4">{{item.current}}：</span>{{item.name}} ({{item.date}})</div>
+                  <div style="text-indent: 2em;">{{item.content}}</div>
+              </template>
+            </van-cell>
+          </van-list>
         </van-collapse-item>
         <van-collapse-item name="4" class="opinion">
            <template #title>
@@ -77,8 +87,28 @@ export default {
   },
 
   setup() {
+
     const { route, router } = common();
-    const activeNames = ref(['1']);
+    // const activeNames = ref(['1','2','3','4']);
+    const activeNames = ref('1');
+
+
+    var clientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+    window.onresize = function() {
+        var nowClientHeight = document.documentElement.clientHeight || document.body.clientHeight;
+      //  alert(nowClientHeight);
+        if (clientHeight - nowClientHeight > 60 ) {//因为ios有自带的底部高度
+            //键盘弹出的事件处理
+            document.getElementById("detail").classList.add("focusState");
+            //  alert(nowClientHeight)
+        }else{
+          document.getElementById("detail").classList.remove("focusState");
+        }
+        // else {
+        //     //键盘收起的事件处理
+        // 	document.getElementById("detail").classList.remove("focusState");
+        // } 
+    };
     // 刷新
     const refresh = () => {
       console.log("刷新列表");
@@ -101,6 +131,13 @@ export default {
       showSubmitDialog.value = true;
       submitReason.value = "";
     };
+
+
+     const opinionList = [
+      {dept:"办公室",name:"青运如",date:"2021-03-02 09:46",current:"拟办意见",content:"阅知"},
+      {dept:"办公室",name:"青运如",date:"2021-03-02 09:46",current:"拟办意见",content:"阅知"},
+      {dept:"办公室",name:"青运如",date:"2021-03-02 09:46",current:"拟办意见",content:"阅知"},
+    ]
 
     const submitReason = ref("");
 
@@ -160,7 +197,8 @@ export default {
       activeNames,
       attachmentList,
       previewPdf,
-      setLocalS
+      setLocalS,
+      opinionList
     };
   },
 };
@@ -196,6 +234,10 @@ export default {
 //     border: 0.333333px solid #ebedf0
 //   }
 // }
+.base-info .van-cell{
+   padding-top:5px;
+   padding-bottom:5px;
+}
 /deep/ .base-info .van-collapse-item__wrapper .van-collapse-item__content {
   padding-left:0;
   padding-right:0;
@@ -211,4 +253,5 @@ export default {
 .attachment-item:last-child {
   padding-bottom:0;
 }
+.focusState {position: absolute;}
 </style>
